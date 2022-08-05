@@ -31,16 +31,17 @@ from discord.ext import commands
 bot = commands.Bot(command_prefix='$')
 
 
-@bot.command(name='sausage', help='posts current bots exp and lvl')
+@bot.command(name='bot', help='posts current bots exp and lvl')
 @commands.cooldown(1, 50, commands.BucketType.user)
 async def exp(ctx):
-    r = requests.get('https://game.eoserv.net/api/get_character?name=sausage')
+    r = requests.get('https://game.eoserv.net/api/get_character?name=kodyt')
     json_data = json.loads(r.text)
     status_bot = json_data['level']
     status_exp = json_data['exp']
+    status_guild = json_data['guild']
     await ctx.send('Bot Level is: **{}**'.format(status_bot) +
                    '       Current EXP is: **{}**'.format(status_exp) +
-                   '       http://bbis.us/~blo/eosig/?user=sausage&type=4')
+                   '       http://bbis.us/~blo/eosig/?user=kodyt&type=4')
 
 
 # CHAR LOOK UP
@@ -49,17 +50,26 @@ async def exp(ctx):
     help=
     '$player posts player stats.'
 )
-@commands.cooldown(1, 20, commands.BucketType.user)
+@commands.cooldown(1, 5, commands.BucketType.user)
 async def exp(ctx, charName):
     r = requests.get('https://game.eoserv.net/api/get_character?name=' +
                      charName)
     json_data = json.loads(r.text)
     status_bot = json_data['level']
     status_exp = json_data['exp']
-    await ctx.send('Player Level is: **{}**'.format(status_bot) +
-                   '       Current EXP is: **{}**'.format(status_exp) +
-                   '     Player status is: http://bbis.us/~blo/eosig/?user=' +
-                   charName + '&type=4')
+    status_guild = json_data['guild']
+    status_usage = json_data['usage']
+    status_home = json_data['home']
+    status_title = json_data['title']
+    
+    await ctx.send('```\n Player Level: {}'.format(status_bot) +                                                                                          
+                   '      \n EXP: {}'.format(status_exp) +                    
+                   
+                   '      \n Guild: {}'.format(status_guild) +                                                                                            
+                   
+                   '      \n Current Usage: {}'.format(status_usage) +             
+                   
+                   '     \n Title is: {}```'.format(status_title))
 ####
 ##item look up
 # CHAR LOOK UP
@@ -137,15 +147,17 @@ async def displayembed(ctx):
 import mechanicalsoup
 
 
-@bot.command(name="coords", help='bot cords')
+@bot.command(name="loc", help='bot cords')
 @commands.cooldown(1, 50, commands.BucketType.user)
 async def displayembed(ctx):
 
     browser = mechanicalsoup.StatefulBrowser()
-    browser.open("https://game.eoserv.net/character?name=CHAR NAME HERE")
+    browser.open("https://game.eoserv.net/character?name=kodyt")
     browser.select_form()
-    browser["username"] = ""
-    browser["password"] = ""
+    browser["username"] = my_secret = os.environ['username']
+    browser["password"] = my_secret = os.environ['password']
+
+
     browser.submit_selected()
 
     page = browser.page
@@ -162,7 +174,7 @@ async def displayembed(ctx):
     embed = discord.Embed(
         title="Location",
         description=
-        "Current character location information, if character is on map 76 bot has been jailed. "
+        "Current character location information, if character is on map 76 bot has been jailed. Botting On Twitch at https://www.twitch.tv/kodytron "
     )
     embed.add_field(name="Map", value=mapOutput, inline=False)
     embed.add_field(name="Coords", value=coordsOutput, inline=False)
